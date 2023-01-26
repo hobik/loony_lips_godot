@@ -11,7 +11,7 @@ var player_words = []
 #		"story":"There is a %s, %s, %s %s"
 #		}
 #		]
-var current_story		
+var current_story = {}		
 
 onready var PlayerText = $VBoxContainer/HBoxContainer/PlayerText
 onready var DisplayText = $VBoxContainer/DisplayText
@@ -23,14 +23,22 @@ func _ready() -> void:
 		check_player_words_length()
 		PlayerText.grab_focus()
 func set_current_story():
+	var stories = get_from_json("StoryBook.json")
 	randomize()
-	var stories = $StoryBook.get_child_count()
-	var selected_story = randi() % stories
-	print(selected_story)
-	current_story = $StoryBook.get_child(selected_story)
+	current_story = stories[randi() % stories.size()]
+#	var stories = $StoryBook.get_child_count()
+#	var selected_story = randi() % stories
+#	print(selected_story)
+#	current_story = $StoryBook.get_child(selected_story)
 	#current_story.story = $StoryBook.get_child(selected_story).story
 #	current_story = template[randi() % template.size() ]
-
+func get_from_json(filename):
+	var file = File.new()
+	file.open((filename), File.READ)
+	var text = file.get_as_text() #read as a text
+	var data = parse_json(text)
+	file.close()
+	return data
 func _on_PlayerText_text_entered(new_text: String) -> void:
 	add_to_player_words()
 #	update_DisplayText(new_text)
